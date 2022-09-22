@@ -1,18 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React, { FC } from 'react'
 import { primaryColor } from '../../styles'
-import { useNavigation } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 interface IHeader {
 	children: React.ReactNode
+	optionalStyles?: Object
+	colors?: Array<string>
 }
 
-const Header: FC<IHeader> = ({ children }) => {
+const Header: FC<IHeader> = ({ children, optionalStyles, colors }) => {
 	return (
 		<LinearGradient
-			colors={['rgba(8, 169, 218, 1)', 'rgba(147, 226, 250, 1)']}
-			style={styles.header}>
+			colors={colors || ['rgba(8, 169, 218, 1)', 'rgba(147, 226, 250, 1)']}
+			style={{ ...styles.header, ...optionalStyles }}>
 			{children}
 		</LinearGradient>
 	)

@@ -3,6 +3,7 @@ import React, { FC } from 'react'
 
 interface ILayout {
 	children: React.ReactNode
+	optionalStyles?: Object
 }
 
 export const styleCenter = {
@@ -11,8 +12,8 @@ export const styleCenter = {
 	backgroundColor: 'white',
 }
 
-const Layout: FC<ILayout> = ({ children }) => {
-	return <View style={styleCenter}>{children}</View>
+const Layout: FC<ILayout> = ({ children, optionalStyles }) => {
+	return <View style={{ ...styleCenter, ...optionalStyles }}>{children}</View>
 }
 
 export default Layout

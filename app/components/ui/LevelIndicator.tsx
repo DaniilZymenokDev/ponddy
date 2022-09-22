@@ -15,7 +15,7 @@ const colors: Array<string> = [
 ]
 const LevelIndicator: FC<ILevelIndicator> = ({ levelCount }) => {
 	return (
-		<View style={{ ...styles.levelIndicator, backgroundColor: colors[levelCount] }}>
+		<View style={{ ...styles.levelIndicator, backgroundColor: colors[levelCount] || '#E4E900' }}>
 			<Text style={{ ...styles.lvl }}>LVL {levelCount}</Text>
 		</View>
 	)

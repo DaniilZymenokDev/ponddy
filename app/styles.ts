@@ -3,6 +3,7 @@ export const textColor: string = '#2D3942'
 export const secondTextColor: string = '#969CA0'
 export const defaultGrey: string = '#C0C4C6'
 export const bgGrey: string = '#ABB0B3'
+export const grammarBg: string = '#F4F4F5'
 export const defaultFontSize: number = 16
 export const defaultH1: number = 32
 export const defaultH2: number = 24

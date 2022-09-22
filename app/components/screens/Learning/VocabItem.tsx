@@ -1,19 +1,30 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { FC } from 'react'
 import { bgGrey, h2TextStyle, pTextStyle, secondTextColor, textColor } from '../../../styles'
 import LevelIndicator from '../../ui/LevelIndicator'
 import SliderItem from '../../ui/SliderItem'
 
-const VocabItem = () => {
+export interface IVocabItem {
+	chineseText: string
+	transcript: string
+	levelCount: number
+	description1: string
+	description2: string
+	description3: string
+}
+
+const VocabItem: FC<{ vocabItemProps: IVocabItem }> = ({ vocabItemProps }) => {
 	return (
 		<TouchableOpacity style={styles.vocabItem}>
 			<View style={styles.chineseAndTechBar}>
 				<View style={styles.chineseBar}>
-					<Text style={{ ...h2TextStyle, marginBottom: '4%' }}>水</Text>
-					<Text style={{ ...pTextStyle, color: secondTextColor, fontSize: 12 }}>shuǐ</Text>
+					<Text style={{ ...h2TextStyle, marginBottom: '4%' }}>{vocabItemProps.chineseText}</Text>
+					<Text style={{ ...pTextStyle, color: secondTextColor, fontSize: 12 }}>
+						{vocabItemProps.transcript}
+					</Text>
 				</View>
 				<View style={styles.techBar}>
-					<LevelIndicator levelCount={1} />
+					<LevelIndicator levelCount={vocabItemProps.levelCount} />
 					<SliderItem selected={false} iconName={'bookmark-alt'} iconColor={'orange'} unBordered />
 				</View>
 			</View>
@@ -27,7 +38,7 @@ const VocabItem = () => {
 						minWidth: '10%',
 						marginRight: '1%',
 					}}>
-					noun
+					{vocabItemProps.description1}
 				</Text>
 				<Text
 					style={{
@@ -38,7 +49,7 @@ const VocabItem = () => {
 						minWidth: '10%',
 						marginRight: '1%',
 					}}>
-					河流
+					{vocabItemProps.description2}
 				</Text>
 				<Text
 					style={{
@@ -48,7 +59,7 @@ const VocabItem = () => {
 						fontWeight: '600',
 						minWidth: '10%',
 					}}>
-					A large natural stream of water flow
+					{vocabItemProps.description3}
 				</Text>
 			</View>
 		</TouchableOpacity>

@@ -9,9 +9,19 @@ interface ISliderItem {
 	iconName?: string
 	iconColor?: string
 	unBordered?: boolean
+	value?: boolean
+	setValue?: (value: boolean) => void
 }
 
-const SliderItem: FC<ISliderItem> = ({ text, selected, iconName, iconColor, unBordered }) => {
+const SliderItem: FC<ISliderItem> = ({
+	text,
+	selected,
+	iconName,
+	iconColor,
+	unBordered,
+	value,
+	setValue,
+}) => {
 	const styles = StyleSheet.create({
 		sliderItem: {
 			display: 'flex',
@@ -33,7 +43,7 @@ const SliderItem: FC<ISliderItem> = ({ text, selected, iconName, iconColor, unBo
 	})
 
 	return (
-		<TouchableOpacity style={styles.sliderItem}>
+		<TouchableOpacity style={styles.sliderItem} onPress={setValue}>
 			{iconName ? (
 				<Fontisto name={iconName} size={20} color={selected ? 'white' : iconColor} />
 			) : (

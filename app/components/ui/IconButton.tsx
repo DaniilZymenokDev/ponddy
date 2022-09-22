@@ -6,12 +6,13 @@ import { bgGrey } from '../../styles'
 interface IIconButton {
 	iconName: string
 	onPress: () => void
+	color?: string
 }
 
-const IconButton: FC<IIconButton> = ({ iconName, onPress }) => {
+const IconButton: FC<IIconButton> = ({ iconName, onPress, color }) => {
 	return (
 		<TouchableOpacity style={styles.iconButton}>
-			<Ionicons name={iconName} size={24} color={bgGrey} />
+			<Ionicons name={iconName} size={24} color={color || bgGrey} />
 		</TouchableOpacity>
 	)
 }
