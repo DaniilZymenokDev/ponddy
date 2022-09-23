@@ -1,31 +1,31 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC } from 'react'
-import { bgGrey, h2TextStyle, pTextStyle, secondTextColor, textColor } from '../../../styles'
+import { h2TextStyle, pTextStyle, secondTextColor } from '../../../styles'
 import LevelIndicator from '../../ui/LevelIndicator'
 import SliderItem from '../../ui/SliderItem'
+import { useAppDispatch } from '../../../store/hooks'
+import { changeModal } from '../../../store/statesSlice'
+import { savedItemResponse } from '../../../../models/savedListResponse'
 
-export interface IVocabItem {
-	chineseText: string
-	transcript: string
-	levelCount: number
-	description1: string
-	description2: string
-	description3: string
-}
-
-const VocabItem: FC<{ vocabItemProps: IVocabItem }> = ({ vocabItemProps }) => {
+const VocabItem: FC<{ vocabItemProps: savedItemResponse }> = ({ vocabItemProps }) => {
+	const dispatch = useAppDispatch()
 	return (
-		<TouchableOpacity style={styles.vocabItem}>
+		<TouchableOpacity style={styles.vocabItem} onPress={() => dispatch(changeModal(true))}>
 			<View style={styles.chineseAndTechBar}>
 				<View style={styles.chineseBar}>
-					<Text style={{ ...h2TextStyle, marginBottom: '4%' }}>{vocabItemProps.chineseText}</Text>
+					<Text style={{ ...h2TextStyle, marginBottom: '4%' }}>{vocabItemProps.grammar.name}</Text>
 					<Text style={{ ...pTextStyle, color: secondTextColor, fontSize: 12 }}>
-						{vocabItemProps.transcript}
+						{vocabItemProps.grammar.name_hsk3}
 					</Text>
 				</View>
 				<View style={styles.techBar}>
-					<LevelIndicator levelCount={vocabItemProps.levelCount} />
-					<SliderItem selected={false} iconName={'bookmark-alt'} iconColor={'orange'} unBordered />
+					<LevelIndicator levelCount={vocabItemProps.grammar.level_hsk3} />
+					<SliderItem
+						selected={false}
+						iconName={vocabItemProps.saved ? 'bookmark-alt' : 'bookmark-alt'}
+						iconColor={'orange'}
+						unBordered
+					/>
 				</View>
 			</View>
 			<View style={styles.description}>

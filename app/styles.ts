@@ -37,3 +37,14 @@ export const pTextStyle: object = {
 	fontWeight: '500',
 	lineHeight: 20,
 }
+export const displayRowStyle: object = {
+	width: '100%',
+	display: 'flex',
+	flexDirection: 'row',
+}
+export const defaultShadow: object = {
+	shadowColor: '#171717',
+	shadowOffset: { width: -5, height: 4 },
+	shadowOpacity: 1,
+	shadowRadius: 4,
+}

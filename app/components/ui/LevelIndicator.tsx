@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
 
 interface ILevelIndicator {
-	levelCount: number
+	levelCount: string | null
 }
 const colors: Array<string> = [
 	'#E4E900',
@@ -15,7 +15,11 @@ const colors: Array<string> = [
 ]
 const LevelIndicator: FC<ILevelIndicator> = ({ levelCount }) => {
 	return (
-		<View style={{ ...styles.levelIndicator, backgroundColor: colors[levelCount] || '#E4E900' }}>
+		<View
+			style={{
+				...styles.levelIndicator,
+				backgroundColor: colors[Number(levelCount)] || '#E4E900',
+			}}>
 			<Text style={{ ...styles.lvl }}>LVL {levelCount}</Text>
 		</View>
 	)

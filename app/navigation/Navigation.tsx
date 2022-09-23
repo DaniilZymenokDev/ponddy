@@ -6,7 +6,7 @@ import LiveLessons from '../components/screens/LiveLessons/LiveLessons'
 import Home from '../components/screens/home/Home'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { Entypo } from '@expo/vector-icons'
-import { bgGrey, defaultGrey, primaryColor } from '../styles'
+import { bgGrey, defaultGrey, defaultShadow, primaryColor } from '../styles'
 import { Image, Platform, Text } from 'react-native'
 
 const Tab = createMaterialBottomTabNavigator()
@@ -64,11 +64,8 @@ const Navigation: FC = () => {
 					},
 				})}
 				barStyle={{
+					...defaultShadow,
 					backgroundColor: 'white',
-					shadowColor: '#171717',
-					shadowOffset: { width: -5, height: 4 },
-					shadowOpacity: 1,
-					shadowRadius: 4,
 					marginBottom: Platform.OS === 'ios' ? -20 : 0,
 				}}>
 				<Tab.Screen name={'Home'} component={Home} />

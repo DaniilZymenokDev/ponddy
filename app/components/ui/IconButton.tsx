@@ -7,11 +7,12 @@ interface IIconButton {
 	iconName: string
 	onPress: () => void
 	color?: string
+	optionalStyles?: Object
 }
 
-const IconButton: FC<IIconButton> = ({ iconName, onPress, color }) => {
+const IconButton: FC<IIconButton> = ({ iconName, onPress, color, optionalStyles }) => {
 	return (
-		<TouchableOpacity style={styles.iconButton}>
+		<TouchableOpacity style={{ ...styles.iconButton, ...optionalStyles }} onPress={onPress}>
 			<Ionicons name={iconName} size={24} color={color || bgGrey} />
 		</TouchableOpacity>
 	)

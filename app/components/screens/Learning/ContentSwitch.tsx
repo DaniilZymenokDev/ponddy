@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		lineHeight: 24,
 		color: 'white',
-		marginBottom: 4,
+		marginBottom: '4%',
 	},
 	nonActiveText: {
 		fontWeight: '600',

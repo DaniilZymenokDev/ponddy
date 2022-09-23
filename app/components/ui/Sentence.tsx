@@ -7,15 +7,17 @@ interface ISentence {
 	text: string
 	isAnchor?: boolean
 	isSelected: boolean
+	optionalStyles?: Object
 }
 
-const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected }) => {
+const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected, optionalStyles }) => {
 	const styles = StyleSheet.create({
 		sentenceContainer: {
 			display: 'flex',
 			flexDirection: 'column',
 			textAlign: 'center',
 			marginRight: '1%',
+			marginTop: '3%',
 		},
 		sentence: {
 			padding: 8,
@@ -23,11 +25,12 @@ const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected }) => {
 			borderWidth: isSelected ? 1 : 0,
 			borderColor: primaryColor,
 			borderRadius: 10,
+			marginTop: '2%',
 		},
 	})
 
 	return (
-		<TouchableOpacity style={styles.sentenceContainer}>
+		<TouchableOpacity style={{ ...styles.sentenceContainer, ...optionalStyles }}>
 			<View
 				style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', height: '20%' }}>
 				{isAnchor && <FontAwesome name='anchor' size={10} color={primaryColor} />}
