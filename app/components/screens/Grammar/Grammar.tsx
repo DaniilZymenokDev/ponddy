@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { Audio } from 'expo-av'
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import Layout from '../../layout/Layout'
 import Header from '../../ui/Header'
@@ -10,25 +10,22 @@ import SliderItem from '../../ui/SliderItem'
 import LevelIndicator from '../../ui/LevelIndicator'
 import {
 	basicPadding,
-	bgGrey,
 	defaultFontSize,
-	defaultShadow,
 	displayRowStyle,
 	grammarBg,
-	h2TextStyle,
+	primaryColor,
 	pTextStyle,
 	secondTextColor,
 } from '../../../styles'
 import { useAppDispatch } from '../../../store/hooks'
 import { changeModal } from '../../../store/statesSlice'
-import { vocabEmptyItem, vocabItemList } from '../../../utils/vocabItemsList'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import { dictItemResponse } from '../../../../models/dictListResponse'
-import axios from 'axios'
 import Loader from '../../ui/Loader'
 import { api } from '../../../utils/api'
 import useLoading from '../../../hooks/useLoading'
+import Tooltip from 'react-native-walkthrough-tooltip'
+import TooltipContent from '../../ui/TooltipContent'
 interface iGrammar {
 	setVisible?: (value: boolean) => void
 }
@@ -41,12 +38,15 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 			.getSentence()
 			.then((res) => setSavedList(res))
 			.catch((err) => setError(err.message))
-			.finally(() => finishLoading())
+			.finally(() => {
+				if (!error.isError) finishLoading()
+			})
 	}, [])
-	const [activeIndex, setActiveIndex] = useState(0)
-	const { isLoading, startLoading, finishLoading, error, setError } = useLoading()
-	const [savedList, setSavedList] = useState<dictItemResponse>()
 
+	const [activeIndex, setActiveIndex] = useState<number>()
+	const { isLoading, startLoading, finishLoading, error, setError } = useLoading()
+	const [savedList, setSavedList] = useState<dictItemResponse>({} as dictItemResponse)
+	const [isToolTip, setIsToolTip] = useState(false)
 	const dispatch = useAppDispatch()
 	const backNav = () => {
 		dispatch(changeModal(false))
@@ -69,6 +69,7 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 	}
 	const handleUnPresentModal = (): void => {
 		bottomSheetModalRef.current?.dismiss()
+		setActiveIndex(null)
 		setTimeout(() => {
 			setIsOpen(false)
 		}, 100)
@@ -89,65 +90,92 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 			<View style={{ ...basicPadding, height: '35%' }}>
 				<Text
 					style={{ ...pTextStyle, color: secondTextColor, marginTop: '4%', marginBottom: '4%' }}>
-					Sample sentence of Time
+					{savedList?.name}
 				</Text>
-				<View style={{ backgroundColor: 'white', borderRadius: 18, padding: 12, marginTop: 20 }}>
-					<View style={{ flexDirection: 'column' }}>
-						<View style={{ flexDirection: 'row', padding: 10 }}>
-							<AntDesign
-								name='sound'
-								size={20}
-								style={{ marginTop: 42 }}
-								color='#969CA0'
+				<View style={styles.translateContainer}>
+					<View style={styles.textContainer}>
+						<View style={{ width: '10%', paddingTop: '6%' }}>
+							<IconButton
+								iconName={'volume-high'}
 								onPress={() => voiceSpeech(savedList?.sentences[0]?.voice)}
 							/>
-							{savedList?.sentences[0]?.segments.map((item: any, key: number) => {
-								return (
-									<View
-										style={{
-											alignItems: 'center',
-											flexWrap: 'wrap',
-										}}
-										key={key}>
-										<FontAwesome
-											onPress={handleUnPresentModal}
-											name='anchor'
-											color={item.anchor ? '#6ACFED' : '#fff'}
-											size={10}></FontAwesome>
-										<Text
-											style={
-												key === activeIndex
-													? {
-															padding: 10,
-															fontSize: 20,
-															borderWidth: 1,
-															borderRadius: 12,
-															borderColor: '#6ACFED',
-															marginTop: 10,
-															color: item.levels ? 'black' : 'grey',
-													  }
-													: {
-															padding: 10,
-															fontSize: 20,
-															color: item.levels ? 'black' : 'grey',
-															marginTop: 10,
-													  }
-											}
-											onPress={() => {
-												if (item.levels && activeIndex !== key) {
-													handlePresentModal()
-													setActiveIndex(key)
-												} else if ('levels' in item && activeIndex === key) {
-													handleUnPresentModal()
-													setActiveIndex(null)
-												}
-											}}>
-											{item.word}
-										</Text>
-									</View>
-								)
-							})}
 						</View>
+						{savedList?.sentences[0]?.segments.map((item: any, key: number) => {
+							return (
+								<View style={styles.sentenceContainer} key={key}>
+									<Sentence
+										text={item.word}
+										isSelected={key === activeIndex ? true : false}
+										isAnchor={item.anchor}
+										onPress={() => {
+											if (item.levels && activeIndex !== key) {
+												handlePresentModal()
+												setActiveIndex(key)
+											} else if (item.levels && activeIndex === key) {
+												handleUnPresentModal()
+											}
+										}}
+									/>
+								</View>
+							)
+						})}
+					</View>
+					<View
+						style={{
+							borderTopWidth: 1,
+							borderColor: 'rgba(45, 57, 66, 0.1);',
+							paddingVertical: '3%',
+						}}>
+						<Text
+							style={{
+								...pTextStyle,
+								color: secondTextColor,
+							}}>
+							{savedList?.sentences[0]?.trans}
+						</Text>
+					</View>
+					<View
+						style={{
+							borderTopWidth: 1,
+							borderColor: 'rgba(45, 57, 66, 0.1);',
+							paddingVertical: '3%',
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						}}>
+						<View
+							style={{
+								display: 'flex',
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+							}}>
+							<FontAwesome
+								name='anchor'
+								size={10}
+								color={primaryColor}
+								style={{ marginRight: '2%' }}
+							/>
+							<Text
+								style={{
+									...pTextStyle,
+									fontWeight: '700',
+									marginRight: '2%',
+									color: secondTextColor,
+								}}>
+								Key Words :
+							</Text>
+							<Text style={{ color: secondTextColor }}>{savedList?.sentences[0]?.simp}</Text>
+						</View>
+						<Tooltip
+							isVisible={isToolTip}
+							contentStyle={{ backgroundColor: '#26293F' }}
+							content={<TooltipContent />}
+							placement='bottom'
+							onClose={() => setIsToolTip(false)}>
+							<IconButton iconName={'help-circle'} onPress={() => setIsToolTip(true)} />
+						</Tooltip>
 					</View>
 				</View>
 			</View>
@@ -318,5 +346,25 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: '#D5D7D9',
 		borderRadius: 8,
+	},
+	translateContainer: {
+		width: '100%',
+		height: '80%',
+		backgroundColor: 'white',
+		padding: '3%',
+		borderRadius: 10,
+	},
+	textContainer: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		height: '65%',
+	},
+	sentenceContainer: {
+		display: 'flex',
+		flexDirection: 'row',
+		width: '10%',
+		flexWrap: 'wrap',
+		overflow: 'hidden',
 	},
 })

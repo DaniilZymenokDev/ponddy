@@ -8,9 +8,10 @@ interface ISentence {
 	isAnchor?: boolean
 	isSelected: boolean
 	optionalStyles?: Object
+	onPress: Function
 }
 
-const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected, optionalStyles }) => {
+const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected, optionalStyles, onPress }) => {
 	const styles = StyleSheet.create({
 		sentenceContainer: {
 			display: 'flex',
@@ -30,7 +31,7 @@ const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected, optionalStyles })
 	})
 
 	return (
-		<TouchableOpacity style={{ ...styles.sentenceContainer, ...optionalStyles }}>
+		<TouchableOpacity onPress={onPress} style={{ ...styles.sentenceContainer, ...optionalStyles }}>
 			<View
 				style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', height: '20%' }}>
 				{isAnchor && <FontAwesome name='anchor' size={10} color={primaryColor} />}
