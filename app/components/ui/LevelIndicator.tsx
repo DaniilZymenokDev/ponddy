@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 
 interface ILevelIndicator {
-	levelCount: string | null
+	levelCount: string | undefined
 }
 const colors: Array<string> = [
 	'#E4E900',

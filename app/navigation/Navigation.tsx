@@ -8,6 +8,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { Entypo } from '@expo/vector-icons'
 import { bgGrey, defaultGrey, defaultShadow, primaryColor } from '../styles'
 import { Image, Platform, Text } from 'react-native'
+import Grammar from '../components/screens/Grammar/Grammar'
 
 const Tab = createMaterialBottomTabNavigator()
 

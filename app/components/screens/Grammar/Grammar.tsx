@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import { Audio } from 'expo-av'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
@@ -17,8 +17,6 @@ import {
 	pTextStyle,
 	secondTextColor,
 } from '../../../styles'
-import { useAppDispatch } from '../../../store/hooks'
-import { changeModal } from '../../../store/statesSlice'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { dictItemResponse } from '../../../../models/dictListResponse'
 import Loader from '../../ui/Loader'
@@ -26,39 +24,40 @@ import { api } from '../../../utils/api'
 import useLoading from '../../../hooks/useLoading'
 import Tooltip from 'react-native-walkthrough-tooltip'
 import TooltipContent from '../../ui/TooltipContent'
-interface iGrammar {
-	setVisible?: (value: boolean) => void
-}
 
-const Grammar: FC<iGrammar> = ({ setVisible }) => {
+interface iGrammar {}
+
+const Grammar: FC<iGrammar> = () => {
 	useEffect(() => {
 		handleUnPresentModal()
 		startLoading()
 		api
 			.getSentence()
-			.then((res) => setSavedList(res))
+			.then((res) => setDictItem(res))
 			.catch((err) => setError(err.message))
 			.finally(() => {
-				if (!error.isError) finishLoading()
+				finishLoading()
 			})
 	}, [])
 
-	const [activeIndex, setActiveIndex] = useState<number>()
+	const [activeIndex, setActiveIndex] = useState<number | null>()
 	const { isLoading, startLoading, finishLoading, error, setError } = useLoading()
-	const [savedList, setSavedList] = useState<dictItemResponse>({} as dictItemResponse)
+	const [dictItem, setDictItem] = useState<dictItemResponse>({} as dictItemResponse)
 	const [isToolTip, setIsToolTip] = useState(false)
-	const dispatch = useAppDispatch()
-	const backNav = () => {
-		dispatch(changeModal(false))
-	}
-	const bottomSheetModalRef = useRef(null)
+	const backNav = () => {}
+	const bottomSheetModalRef = useRef<BottomSheetModal>(null)
 	const snapPoints = ['97%', '98%']
 	const setValue = (value: number): void => {}
-	async function voiceSpeech(soundLink: string) {
-		const { sound } = await Audio.Sound.createAsync({
+
+	async function voiceSpeech(soundLink: string | undefined) {
+		if (!soundLink) return
+		Audio.Sound.createAsync({
 			uri: soundLink,
 		})
-		await sound.playAsync()
+			.then(async ({ sound }) => {
+				await sound.playAsync()
+			})
+			.catch((error) => Alert.alert(error.message))
 	}
 	const [isOpen, setIsOpen] = useState(false)
 	const handlePresentModal = (): void => {
@@ -90,17 +89,17 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 			<View style={{ ...basicPadding, height: '35%' }}>
 				<Text
 					style={{ ...pTextStyle, color: secondTextColor, marginTop: '4%', marginBottom: '4%' }}>
-					{savedList?.name}
+					{dictItem?.name}
 				</Text>
 				<View style={styles.translateContainer}>
 					<View style={styles.textContainer}>
 						<View style={{ width: '10%', paddingTop: '6%' }}>
 							<IconButton
 								iconName={'volume-high'}
-								onPress={() => voiceSpeech(savedList?.sentences[0]?.voice)}
+								onPress={() => voiceSpeech(dictItem?.sentences[0]?.voice)}
 							/>
 						</View>
-						{savedList?.sentences[0]?.segments.map((item: any, key: number) => {
+						{dictItem?.sentences[0]?.segments.map((item: any, key: number) => {
 							return (
 								<View style={styles.sentenceContainer} key={key}>
 									<Sentence
@@ -131,7 +130,7 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 								...pTextStyle,
 								color: secondTextColor,
 							}}>
-							{savedList?.sentences[0]?.trans}
+							{dictItem?.sentences[0]?.trans}
 						</Text>
 					</View>
 					<View
@@ -166,14 +165,16 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 								}}>
 								Key Words :
 							</Text>
-							<Text style={{ color: secondTextColor }}>{savedList?.sentences[0]?.simp}</Text>
+							<Text style={{ color: secondTextColor }}>{dictItem?.sentences[0]?.simp}</Text>
 						</View>
 						<Tooltip
 							isVisible={isToolTip}
 							contentStyle={{ backgroundColor: '#26293F' }}
 							content={<TooltipContent />}
 							placement='bottom'
-							onClose={() => setIsToolTip(false)}>
+							onClose={() => {
+								setIsToolTip(false)
+							}}>
 							<IconButton iconName={'help-circle'} onPress={() => setIsToolTip(true)} />
 						</Tooltip>
 					</View>
@@ -192,7 +193,10 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 							shadowOpacity: 3,
 							shadowRadius: 5,
 						}}
-						onDismiss={() => setIsOpen(false)}>
+						onDismiss={() => {
+							setIsOpen(false)
+							setActiveIndex(null)
+						}}>
 						<View style={styles.contentContainer}>
 							<View style={styles.vocabularyHeader}>
 								<View
@@ -225,7 +229,7 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 									marginBottom: '2%',
 								}}>
 								<Sentence
-									text={savedList && savedList?.sentences[0]?.segments[activeIndex]?.word}
+									text={dictItem && dictItem?.sentences[0]?.segments[activeIndex]?.word}
 									isSelected={false}
 									optionalStyles={{ marginTop: 0 }}
 								/>
@@ -242,7 +246,7 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 										iconName={'bookmark'}
 										iconColor={'orange'}
 									/>
-									<SliderItem text={'More'} selected={true} onPress={setValue} />
+									<SliderItem text={'More'} selected={true} onPress={() => setValue} />
 								</View>
 							</View>
 							<View
@@ -253,7 +257,10 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 									width: '100%',
 									marginBottom: '2%',
 								}}>
-								<IconButton iconName={'volume-high'} onPress={voiceSpeech} />
+								<IconButton
+									iconName={'volume-high'}
+									onPress={() => voiceSpeech(dictItem?.sentences[0]?.voice)}
+								/>
 								<Text
 									style={{ fontSize: defaultFontSize, color: secondTextColor, marginLeft: '2%' }}>
 									Pronounce
@@ -262,9 +269,7 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 							<View style={{ ...displayRowStyle, alignItems: 'center', marginBottom: '2%' }}>
 								<LevelIndicator
 									levelCount={
-										savedList
-											? savedList?.sentences[0]?.segments[activeIndex]?.levels?.level_hsk3
-											: '1'
+										dictItem?.sentences[0]?.segments[activeIndex]?.levels?.level_hsk3 ?? '1'
 									}
 								/>
 								<Text
@@ -276,29 +281,20 @@ const Grammar: FC<iGrammar> = ({ setVisible }) => {
 										marginRight: '2%',
 										marginLeft: '2%',
 									}}>
-									{savedList && savedList?.sentences[0]?.segments[activeIndex]?.pos[0]}.
+									{dictItem && dictItem?.sentences[0]?.segments[activeIndex]?.pos[0]}.
 								</Text>
 								<View style={styles.artText}>
 									<Text style={{ color: '#D5D7D9' }}>
-										{savedList?.sentences[0]?.segments[activeIndex]?.word}
+										{dictItem?.sentences[0]?.segments[activeIndex]?.word}
 									</Text>
 								</View>
-								{/* <Text style={{ ...h2TextStyle, marginLeft: '2%' }}>九月</Text> */}
 							</View>
 							<View
 								style={{
 									borderBottomWidth: 1,
 									borderColor: 'rgba(45, 57, 66, 0.1);',
 									paddingBottom: '4%',
-								}}>
-								{/* <Text
-									style={{
-										...pTextStyle,
-										color: '#576168',
-									}}>
-									September
-								</Text> */}
-							</View>
+								}}></View>
 						</View>
 					</BottomSheetModal>
 				</BottomSheetModalProvider>

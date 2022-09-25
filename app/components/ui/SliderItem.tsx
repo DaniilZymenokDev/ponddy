@@ -6,11 +6,12 @@ import { Fontisto } from '@expo/vector-icons'
 interface ISliderItem {
 	text?: string
 	selected?: boolean
-	iconName?: string
+	iconName?: keyof typeof Fontisto.glyphMap
 	iconColor?: string
 	unBordered?: boolean
 	value?: boolean
 	setValue?: (value: boolean) => void
+	onPress?: Function
 }
 
 const SliderItem: FC<ISliderItem> = ({
@@ -20,6 +21,7 @@ const SliderItem: FC<ISliderItem> = ({
 	iconColor,
 	unBordered,
 	value,
+	onPress,
 	setValue,
 }) => {
 	const styles = StyleSheet.create({
@@ -43,7 +45,7 @@ const SliderItem: FC<ISliderItem> = ({
 	})
 
 	return (
-		<TouchableOpacity style={styles.sliderItem} onPress={setValue}>
+		<TouchableOpacity style={styles.sliderItem} onPress={() => onPress}>
 			{iconName ? (
 				<Fontisto name={iconName} size={20} color={selected ? 'white' : iconColor} />
 			) : (

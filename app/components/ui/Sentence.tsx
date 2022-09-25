@@ -8,7 +8,7 @@ interface ISentence {
 	isAnchor?: boolean
 	isSelected: boolean
 	optionalStyles?: Object
-	onPress: Function
+	onPress?: () => void
 }
 
 const Sentence: FC<ISentence> = ({ text, isAnchor, isSelected, optionalStyles, onPress }) => {

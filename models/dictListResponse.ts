@@ -1,41 +1,9 @@
 export interface dictListResponse {
 	next: string
 	previous: string | null
-	results: Array<any>
+	results: Array<dictItemResponse>
 }
 
-// export interface dictItemResponce {
-// 	id: number
-// 	saved: boolean
-// 	level_hsk3: string | null
-// 	level_hsk: string | null
-// 	name: string
-// 	name_trad: string
-// 	explan_en: string
-// 	explan_en_trad: string
-// 	level: number
-// 	name_hsk3: string
-// 	name_hsk3_trad: string
-// 	name_hsk3_original: string
-// 	gid: string
-// 	gid_hsk3: string
-// 	structure: string
-// 	structure_trad: string
-// 	explan: string
-// 	explan_ja: string
-// 	explan_ja_trad: string
-// 	name_ja: string
-// 	name_trad_ja: string
-// 	anchor_words: string
-// 	reference: string
-// 	video: string
-// 	video_trad: string
-// 	search_keyword: string
-// 	search_keyword_trad: string
-// 	thumbnail: string
-// 	thumbnail_trad: string
-// 	learned: boolean
-// }
 export interface ISegment {
 	id?: number
 	levels?: {

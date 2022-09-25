@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { dictItemResponse } from '../../models/dictListResponse'
-import { savedObjectResponse } from '../../models/savedListResponse'
+import { dictItemResponse, dictListResponse } from '../../models/dictListResponse'
 
 export const _api = axios.create({
 	baseURL: 'https://dictionary-api-development.ponddy.com/api/v1',
@@ -19,8 +18,8 @@ _api.interceptors.request.use((config) => {
 })
 
 export const api = {
-	getSavedList: async () => {
-		const result: AxiosResponse<savedObjectResponse> = await _api.get(`/grammars/saved`)
+	getVocabList: async () => {
+		const result: AxiosResponse<dictListResponse> = await _api.get(`/grammars/news`)
 		return result.data
 	},
 	getSentence: async () => {
