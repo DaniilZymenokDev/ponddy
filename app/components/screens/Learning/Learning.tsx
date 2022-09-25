@@ -1,4 +1,4 @@
-import { StyleSheet, View, Modal, Alert } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Layout from '../../layout/Layout'
 import Header from '../../ui/Header'
@@ -8,30 +8,27 @@ import { basicPadding } from '../../../styles'
 import Panel from './Panel'
 import VocabList from './VocabList'
 import ContentSwitch from './ContentSwitch'
-import Grammar from '../Grammar/Grammar'
 import { useAppSelector } from '../../../store/hooks'
 import useLoading from '../../../hooks/useLoading'
 import { api } from '../../../utils/api'
 import Loader from '../../ui/Loader'
+import { dictItemResponse, dictListResponse } from '../../../../models/dictListResponse'
 
 const Learning = () => {
 	const [isFirstPage, setIsFirstPage] = useState<boolean>(true)
 	const [isFamiliar, setIsFamiliar] = useState<boolean>(true)
-	// const [savedList, setSavedList] = useState<dictListResponse[]>([])
-	const [savedList, setSavedList] = useState([])
+	const [savedList, setSavedList] = useState<Array<dictItemResponse>>()
 
-	const statesStore = useAppSelector((state) => state.statesList)
 	const { isLoading, startLoading, finishLoading, error, setError } = useLoading()
 	useEffect(() => {
 		startLoading()
 		api
 			.getVocabList()
-			.then((res) => setSavedList(res))
+			.then((res) => setSavedList(res.results))
 			.catch((err) => setError(err.message))
 			.finally(() => {
 				if (!error.isError) finishLoading()
 			})
-		console.log(savedList)
 	}, [])
 	return (
 		<Layout>

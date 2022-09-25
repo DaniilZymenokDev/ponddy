@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { FC } from 'react'
 
 interface ILevelIndicator {
-	levelCount: string | undefined
+	levelCount: string | number
 }
 const colors: Array<string> = [
 	'#E4E900',

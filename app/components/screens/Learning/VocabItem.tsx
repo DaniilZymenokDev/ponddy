@@ -3,26 +3,27 @@ import React, { FC } from 'react'
 import { h2TextStyle, pTextStyle, secondTextColor } from '../../../styles'
 import LevelIndicator from '../../ui/LevelIndicator'
 import SliderItem from '../../ui/SliderItem'
-import { useAppDispatch } from '../../../store/hooks'
-import { changeModal } from '../../../store/statesSlice'
-import { savedItemResponse } from '../../../../models/savedListResponse'
+import { dictItemResponse } from '../../../../models/dictListResponse'
 
-const VocabItem: FC<{ vocabItemProps: savedItemResponse }> = ({ vocabItemProps }) => {
-	const dispatch = useAppDispatch()
+interface IVocabItem {
+	item: dictItemResponse
+}
+
+const VocabItem: FC<IVocabItem> = ({ item }) => {
 	return (
-		<TouchableOpacity style={styles.vocabItem} onPress={() => dispatch(changeModal(true))}>
+		<TouchableOpacity style={styles.vocabItem}>
 			<View style={styles.chineseAndTechBar}>
 				<View style={styles.chineseBar}>
-					<Text style={{ ...h2TextStyle, marginBottom: '4%' }}>{vocabItemProps.grammar.name}</Text>
+					<Text style={{ ...h2TextStyle, marginBottom: '4%' }}>{item.name}</Text>
 					<Text style={{ ...pTextStyle, color: secondTextColor, fontSize: 12 }}>
-						{vocabItemProps.grammar.name_hsk3}
+						{item.name_hsk3}
 					</Text>
 				</View>
 				<View style={styles.techBar}>
-					<LevelIndicator levelCount={vocabItemProps.grammar.level_hsk3} />
+					<LevelIndicator levelCount={item.level} />
 					<SliderItem
 						selected={false}
-						iconName={vocabItemProps.saved ? 'bookmark-alt' : 'bookmark-alt'}
+						iconName={item.saved ? 'bookmark-alt' : 'bookmark'}
 						iconColor={'orange'}
 						unBordered
 					/>
@@ -38,7 +39,7 @@ const VocabItem: FC<{ vocabItemProps: savedItemResponse }> = ({ vocabItemProps }
 						minWidth: '10%',
 						marginRight: '1%',
 					}}>
-					{vocabItemProps.description1}
+					{item.name_hsk3}
 				</Text>
 				<Text
 					style={{
@@ -49,7 +50,7 @@ const VocabItem: FC<{ vocabItemProps: savedItemResponse }> = ({ vocabItemProps }
 						minWidth: '10%',
 						marginRight: '1%',
 					}}>
-					{vocabItemProps.description2}
+					{item.name_hsk3}
 				</Text>
 				<Text
 					style={{
@@ -59,7 +60,7 @@ const VocabItem: FC<{ vocabItemProps: savedItemResponse }> = ({ vocabItemProps }
 						fontWeight: '600',
 						minWidth: '10%',
 					}}>
-					{vocabItemProps.description3}
+					{item.name_hsk3}
 				</Text>
 			</View>
 		</TouchableOpacity>

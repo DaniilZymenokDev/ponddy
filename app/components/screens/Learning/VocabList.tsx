@@ -1,21 +1,20 @@
 import { FlatList, StyleSheet, View } from 'react-native'
 import React, { FC } from 'react'
 import VocabItem from './VocabItem'
-import { savedItemResponse } from '../../../../models/savedListResponse'
-import { dictItemResponce } from '../../../../models/dictListResponse'
+import { dictItemResponse } from '../../../../models/dictListResponse'
 
 interface IVocabList {
-	data: Array<dictItemResponce>
+	data: Array<dictItemResponse>
 }
 
 const VocabList: FC<IVocabList> = ({ data }) => {
-	const renderVocabItem = (item: any) => <VocabItem vocabItemProps={item} />
+	const renderVocabItem = (item: any) => <VocabItem item={item} />
 	return (
 		<View style={styles.vocabList}>
 			<FlatList
 				data={data}
 				renderItem={renderVocabItem}
-				keyExtractor={(item) => item.id}
+				keyExtractor={(item) => `${item.id}`}
 				scrollEnabled={true}
 			/>
 		</View>

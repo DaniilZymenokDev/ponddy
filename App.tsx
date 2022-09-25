@@ -1,23 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import Navigation from './app/navigation/Navigation'
-import { Provider } from 'react-redux'
-import store from './app/store'
+import React from 'react'
 import Grammar from './app/components/screens/Grammar/Grammar'
+import Navigation from './app/navigation/Navigation'
 
 export default function App() {
 	return (
-		<Provider store={store}>
-			{/* <Navigation /> */}
-			<Grammar />
-		</Provider>
+		// <Navigation />
+		<Grammar />
 	)
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-})
